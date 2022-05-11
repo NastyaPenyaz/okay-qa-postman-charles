@@ -1,0 +1,2888 @@
+{
+	"info": {
+		"_postman_id": "d781c0a0-7551-459d-b40a-cd7db106fbab",
+		"name": "BCC_APP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1.1 RequestCode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Request code\", function() {",
+							"let response = pm.response.json();",
+							"pm.collectionVariables.set( \"sessid\", response.sessid);",
+							"pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/api/v1/requestCode",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"requestCode"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1.2 SignIn",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"SignIn\", function() {",
+							"let response = pm.response.json();",
+							"pm.collectionVariables.set( \"token\", response.token);",
+							"pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"sessid\": \"{{sessid}}\",\n\t\"code\": \"{{code}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/signin",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1.3 Create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create\", function() {",
+							"pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/users/password/create",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"password",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.1 Transfer to contact token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Transfer to contact token\", function() {",
+							"let response = pm.response.json();",
+							"pm.collectionVariables.set( \"confirmationToken\", response.errors[0].properties.confirmationToken);",
+							"pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Transfer to contact token have code 449\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].code ).to.eql(449);",
+							"});",
+							"pm.test(\"Transfer to contact token have confirmationToken\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].properties ).to.have.property(\"confirmationToken\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"pm.variables.set('account', accounts.split(',')[0]);",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = Math.random() * (2 - 0.04) + 0.04;",
+							"pm.collectionVariables.set('value', value.toFixed(2));",
+							"pm.variables.set('value', value.toFixed(2));",
+							"pm.variables.set('phoneNumber', '79000000008');",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_contact\": {\n\t\t\"account\": \"{{account}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"phoneNumber\": \"{{phoneNumber}}\",\n\t\t\"sendLinkToRecipient\": false,\n\t\t\"purpose\": \"Other\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_contact",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_contact"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.2 Transfer to contact without token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Transfer to contact without token have status 401\", function() {",
+							"pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"pm.variables.set('account', accounts.split(',')[0]);",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = pm.collectionVariables.get(\"value\");",
+							"pm.variables.set('value', value);",
+							"pm.variables.set('phoneNumber', '79000000008');",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "x-confirmation-token",
+						"value": "{{confirmationToken}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-code",
+						"value": "{{x-confirmation-code}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-uuid",
+						"value": "{{x-app-uuid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_contact\": {\n\t\t\"account\": \"{{account}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"phoneNumber\": \"{{phoneNumber}}\",\n\t\t\"sendLinkToRecipient\": false,\n\t\t\"purpose\": \"Other \"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_contact",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_contact"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.3 Transfer to contact without account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Transfer to contact without account\", function() {",
+							"pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Transfer to contact without account have errors code\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].code ).to.eql(2000);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = pm.collectionVariables.get(\"value\");",
+							"pm.variables.set('value', value);",
+							"pm.variables.set('phoneNumber', '79000000008');",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-token",
+						"value": "{{confirmationToken}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-code",
+						"value": "{{x-confirmation-code}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-uuid",
+						"value": "{{x-app-uuid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_contact\": {\n\t\t\"account\": \" \",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"phoneNumber\": \"{{phoneNumber}}\",\n\t\t\"sendLinkToRecipient\": false,\n\t\t\"purpose\": \"Other \"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_contact",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_contact"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.4 Transfer to contact without applicationId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Transfer to contact without applicationId have status 401\", function() {",
+							"pm.response.to.have.status(401);",
+							"});",
+							"pm.test(\"Transfer to contact without applicationId have correct errors message\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].message ).to.eql(\"applicationId is not present in headers\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"pm.variables.set('account', accounts.split(',')[0]);",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = pm.collectionVariables.get(\"value\");",
+							"pm.variables.set('value', value);",
+							"pm.variables.set('phoneNumber', '79000000008');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-token",
+						"value": "{{confirmationToken}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-code",
+						"value": "{{x-confirmation-code}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-uuid",
+						"value": "{{x-app-uuid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_contact\": {\n\t\t\"account\": \"{{account}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"phoneNumber\": \"{{phoneNumber}}\",\n\t\t\"sendLinkToRecipient\": false,\n\t\t\"purpose\": \"Other \"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_contact",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_contact"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.5 Transfer to contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Transfer to contact\", function() {",
+							"pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Transfer to contact have referenceNumber\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response).to.have.property(\"referenceNumber\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"pm.variables.set('account', accounts.split(',')[0]);",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = pm.collectionVariables.get(\"value\");",
+							"pm.variables.set('value', value);",
+							"pm.variables.set('phoneNumber', '79000000008');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-token",
+						"value": "{{confirmationToken}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-code",
+						"value": "{{x-confirmation-code}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-uuid",
+						"value": "{{x-app-uuid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_contact\": {\n\t\t\"account\": \"{{account}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"phoneNumber\": \"{{phoneNumber}}\",\n\t\t\"sendLinkToRecipient\": false,\n\t\t\"purpose\": \"Other\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_contact",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_contact"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3.1 Transfer to card token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Transfer to card token\", function() {",
+							"let response = pm.response.json();",
+							"pm.collectionVariables.set( \"confirmationToken\", response.errors[0].properties.confirmationToken);",
+							"pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Transfer to contact token have code 449\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].code ).to.eql(449);",
+							"});",
+							"pm.test(\"Transfer to contact token have confirmationToken\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].properties ).to.have.property(\"confirmationToken\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.unset('confirmationToken');",
+							"pm.collectionVariables.unset('value');",
+							"",
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"pm.variables.set('account', accounts.split(',')[0]);",
+							"pm.variables.set('cardNumber', '5277601000041483');",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = Math.random() * (2 - 0.04) + 0.04;",
+							"",
+							"pm.collectionVariables.set('value', value.toFixed(2));",
+							"pm.variables.set('value', value.toFixed(2));",
+							"pm.variables.set('purpose', 'Top up card');",
+							"pm.variables.set('cardOwner', 'TEST TWO');",
+							"pm.variables.set('fromCardId', 'PPYCRM6286');",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_contact\": {\n\t\t\"account\": \"{{account}}\",\n\t\t\"cardNumber\": \"{{cardNumber}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"purpose\": \"{{purpose}}\",\n\t\t\"cardOwner\": \"{{cardOwner}}\",\n\t\t\"fromCardId\": \"{{fromCardId}}\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_contact",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_contact"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3.2 Transfer to card without token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Transfer to card without token have status 401\", function() {",
+							"pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"pm.variables.set('account', accounts.split(',')[0]);",
+							"pm.variables.set('cardNumber', '5277601000041483');",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = pm.collectionVariables.get(\"value\");",
+							"pm.variables.set('value', value);",
+							"pm.variables.set('purpose', 'Top up card');",
+							"pm.variables.set('cardOwner', 'TEST TWO');",
+							"pm.variables.set('fromCardId', 'PPYCRM6286');",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "x-confirmation-token",
+						"value": "{{confirmationToken}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-code",
+						"value": "{{x-confirmation-code}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-uuid",
+						"value": "{{x-app-uuid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_contact\": {\n\t\t\"account\": \"{{account}}\",\n\t\t\"cardNumber\": \"{{cardNumber}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"purpose\": \"{{purpose}}\",\n\t\t\"cardOwner\": \"{{cardOwner}}\",\n\t\t\"fromCardId\": \"{{fromCardId}}\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_contact",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_contact"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3.3 Transfer to card without account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Transfer to card without account\", function() {",
+							"pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Transfer to card without account have errors code\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].code ).to.eql(2000);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.variables.set('cardNumber', '5277601000041483');",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = pm.collectionVariables.get(\"value\");",
+							"pm.variables.set('value', value);",
+							"pm.variables.set('purpose', 'Top up card');",
+							"pm.variables.set('cardOwner', 'TEST TWO');",
+							"pm.variables.set('fromCardId', 'PPYCRM6286');",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-token",
+						"value": "{{confirmationToken}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-code",
+						"value": "{{x-confirmation-code}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-uuid",
+						"value": "{{x-app-uuid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_contact\": {\n\t\t\"account\": \" \",\n\t\t\"cardNumber\": \"{{cardNumber}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"purpose\": \"{{purpose}}\",\n\t\t\"cardOwner\": \"{{cardOwner}}\",\n\t\t\"fromCardId\": \"{{fromCardId}}\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_contact",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_contact"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3.4 Transfer to card without applicationId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Transfer to card without applicationId have status 401\", function() {",
+							"pm.response.to.have.status(401);",
+							"});",
+							"pm.test(\"ransfer to card without applicationId have correct errors message\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].message ).to.eql(\"applicationId is not present in headers\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"pm.variables.set('account', accounts.split(',')[0]);",
+							"pm.variables.set('cardNumber', '5277601000041483');",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = pm.collectionVariables.get(\"value\");",
+							"pm.variables.set('value', value);",
+							"pm.variables.set('purpose', 'Top up card');",
+							"pm.variables.set('cardOwner', 'TEST TWO');",
+							"pm.variables.set('fromCardId', 'PPYCRM6286');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-token",
+						"value": "{{confirmationToken}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-code",
+						"value": "{{x-confirmation-code}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-uuid",
+						"value": "{{x-app-uuid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_contact\": {\n\t\t\"account\": \"{{account}}\",\n\t\t\"cardNumber\": \"{{cardNumber}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"purpose\": \"{{purpose}}\",\n\t\t\"cardOwner\": \"{{cardOwner}}\",\n\t\t\"fromCardId\": \"{{fromCardId}}\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_contact",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_contact"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3.5 Transfer to card",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Transfer to card\", function() {",
+							"pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Transfer to card have referenceNumber\", function() {",
+							"let response = pm.response.json();",
+							"console.log(response)",
+							"pm.expect(response).to.have.property(\"referenceNumber\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"const value = pm.collectionVariables.get(\"value\");",
+							"",
+							"pm.variables.set('account', accounts.split(',')[0]);",
+							"pm.variables.set('cardNumber', '5277601000041483');",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"pm.variables.set('value', value);",
+							"pm.variables.set('purpose', 'Top up card');",
+							"pm.variables.set('cardOwner', 'TEST TWO');",
+							"pm.variables.set('fromCardId', 'PPYCRM6286');",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-token",
+						"value": "{{confirmationToken}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-code",
+						"value": "{{x-confirmation-code}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-uuid",
+						"value": "{{x-app-uuid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_contact\": {\n\t\t\"account\": \"{{account}}\",\n\t\t\"cardNumber\": \"{{cardNumber}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"purpose\": \"{{purpose}}\",\n\t\t\"cardOwner\": \"{{cardOwner}}\",\n\t\t\"fromCardId\": \"{{fromCardId}}\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_contact",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_contact"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4.1 Bank transfer Internal token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Bank transfer Internal token\", function() {",
+							"let response = pm.response.json();",
+							"pm.collectionVariables.set( \"confirmationToken\", response.errors[0].properties.confirmationToken);",
+							"pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Bank transfer Internal token have code 449\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].code ).to.eql(449);",
+							"});",
+							"pm.test(\"Bank transfer Internal token have confirmationToken\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].properties ).to.have.property(\"confirmationToken\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.unset('confirmationToken');",
+							"pm.collectionVariables.unset('value');",
+							"",
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"pm.variables.set('account', accounts.split(',')[0]);",
+							"pm.variables.set('beneficiaryName', 'Test Five');",
+							"pm.variables.set('iban', 'MT05PAPY36836000002676370005805');",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = Math.random() * (2 - 0.04) + 0.04;",
+							"",
+							"pm.collectionVariables.set('value', value.toFixed(2));",
+							"pm.variables.set('value', value.toFixed(2));",
+							"pm.variables.set('purpose', 'Top up card');",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_sepa\": {\n\t\t\"account\": \"{{account}}\",\n\t\t\"beneficiaryName\": \"{{beneficiaryName}}\",\n\t\t\"iban\": \"{{iban}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"purpose\": \"{{purpose}}\",\n\t\t\"transferDetails\": \"\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_sepa",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_sepa"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4.2 Bank transfer Internal without token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Bank transfer Internal without token have status 401\", function() {",
+							"pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"pm.variables.set('account', accounts.split(',')[0]);",
+							"pm.variables.set('beneficiaryName', 'Test Five');",
+							"pm.variables.set('iban', 'MT05PAPY36836000002676370005805');",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = pm.collectionVariables.get(\"value\");",
+							"pm.variables.set('value', value);",
+							"pm.variables.set('purpose', 'Top up card');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "x-confirmation-token",
+						"value": "{{confirmationToken}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-code",
+						"value": "{{x-confirmation-code}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-uuid",
+						"value": "{{x-app-uuid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_sepa\": {\n\t\t\"account\": \"{{account}}\",\n\t\t\"beneficiaryName\": \"{{beneficiaryName}}\",\n\t\t\"iban\": \"{{iban}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"purpose\": \"{{purpose}}\",\n\t\t\"transferDetails\": \"\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_sepa",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_sepa"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4.3 Bank transfer Internal without account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Bank transfer Internal without account\", function() {",
+							"pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Bank transfer Internal without account have errors code\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].code ).to.eql(2000);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.variables.set('beneficiaryName', 'Test Five');",
+							"pm.variables.set('iban', 'MT05PAPY36836000002676370005805');",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = pm.collectionVariables.get(\"value\");",
+							"pm.variables.set('value', value);",
+							"pm.variables.set('purpose', 'Top up card');",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-token",
+						"value": "{{confirmationToken}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-code",
+						"value": "{{x-confirmation-code}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-uuid",
+						"value": "{{x-app-uuid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_sepa\": {\n\t\t\"account\": \"  \",\n\t\t\"beneficiaryName\": \"{{beneficiaryName}}\",\n\t\t\"iban\": \"{{iban}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"purpose\": \"{{purpose}}\",\n\t\t\"transferDetails\": \"\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_sepa",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_sepa"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4.4 Bank transfer Internal without applicationId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Bank transfer Internal without applicationId have status 401\", function() {",
+							"pm.response.to.have.status(401);",
+							"});",
+							"pm.test(\"Bank transfer Internal without applicationId have correct errors message\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].message ).to.eql(\"applicationId is not present in headers\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"pm.variables.set('account', accounts.split(',')[0]);",
+							"pm.variables.set('beneficiaryName', 'Test Five');",
+							"pm.variables.set('iban', 'MT05PAPY36836000002676370005805');",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = pm.collectionVariables.get(\"value\");",
+							"pm.variables.set('value', value);",
+							"pm.variables.set('purpose', 'Top up card');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-token",
+						"value": "{{confirmationToken}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-code",
+						"value": "{{x-confirmation-code}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-uuid",
+						"value": "{{x-app-uuid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_sepa\": {\n\t\t\"account\": \"{{account}}\",\n\t\t\"beneficiaryName\": \"{{beneficiaryName}}\",\n\t\t\"iban\": \"{{iban}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"purpose\": \"{{purpose}}\",\n\t\t\"transferDetails\": \"\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_sepa",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_sepa"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4.5 Bank transfer Internal",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Bank transfer Internal\", function() {",
+							"pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Bank transfer Internal have referenceNumber\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response ).to.have.property(\"referenceNumber\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"pm.variables.set('account', accounts.split(',')[0]);",
+							"pm.variables.set('beneficiaryName', 'Test Five');",
+							"pm.variables.set('iban', 'MT05PAPY36836000002676370005805');",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = pm.collectionVariables.get(\"value\");",
+							"",
+							"pm.variables.set('value', value);",
+							"pm.variables.set('purpose', 'Top up card');",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-token",
+						"value": "{{confirmationToken}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-code",
+						"value": "{{x-confirmation-code}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-uuid",
+						"value": "{{x-app-uuid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_sepa\": {\n\t\t\"account\": \"{{account}}\",\n\t\t\"beneficiaryName\": \"{{beneficiaryName}}\",\n\t\t\"iban\": \"{{iban}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"purpose\": \"{{purpose}}\",\n\t\t\"transferDetails\": \"\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_sepa",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_sepa"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.1 Bank transfer Sepa commision",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Bank transfer Sepa commission has status 200\", function() {",
+							"pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Bank transfer Sepa commission have confirmationToken\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response).to.have.property(\"commission\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.unset('value');",
+							"",
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"pm.variables.set('account', accounts.split(',')[0]);",
+							"pm.variables.set('beneficiaryName', 'Test Five');",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = Math.random() * (2 - 0.04) + 0.04;",
+							"pm.collectionVariables.set('value', value.toFixed(2));",
+							"pm.variables.set('value', value.toFixed(2));",
+							"pm.variables.set('purpose', 'Top up card');",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_sepa\": {\n\t\t\"account\": \"{{account}}\",\n\t\t\"beneficiaryName\": \"{{beneficiaryName}}\",\n\t\t\"iban\": \"{{sepa-account}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"purpose\": \"{{purpose}}\",\n\t\t\"transferDetails\": \"1\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_sepa/commission",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_sepa",
+						"commission"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.2 Bank transfer Sepa token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Bank transfer Sepa token\", function() {",
+							"let response = pm.response.json();",
+							"pm.collectionVariables.set( \"confirmationToken\", response.errors[0].properties.confirmationToken);",
+							"pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Bank transfer Sepa token have code 449\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].code ).to.eql(449);",
+							"});",
+							"pm.test(\"Bank transfer Sepa token have confirmationToken\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].properties ).to.have.property(\"confirmationToken\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.unset('confirmationToken');",
+							"",
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"pm.variables.set('account', accounts.split(',')[0]);",
+							"pm.variables.set('beneficiaryName', 'Test Five');",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = pm.collectionVariables.get(\"value\");",
+							"pm.variables.set('value', value);",
+							"pm.variables.set('purpose', 'Top up card');",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-type",
+						"value": "SIGN",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_sepa\": {\n\t\t\"account\": \"{{account}}\",\n\t\t\"beneficiaryName\": \"{{beneficiaryName}}\",\n\t\t\"iban\": \"{{sepa-account}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"purpose\": \"{{purpose}}\",\n\t\t\"transferDetails\": \"1\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_sepa",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_sepa"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.3 Bank transfer Sepa without token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Bank transfer Sepa without token have status 401\", function() {",
+							"pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"pm.variables.set('account', accounts.split(',')[0]);",
+							"pm.variables.set('beneficiaryName', 'Test Five');",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = pm.collectionVariables.get(\"value\");",
+							"pm.variables.set('value', value);",
+							"pm.variables.set('purpose', 'Top up card');",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "x-confirmation-token",
+						"value": "{{confirmationToken}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-code",
+						"value": "{{x-confirmation-code}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-uuid",
+						"value": "{{x-app-uuid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_sepa\": {\n\t\t\"account\": \"{{account}}\",\n\t\t\"beneficiaryName\": \"{{beneficiaryName}}\",\n\t\t\"iban\": \"{{sepa-account}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"purpose\": \"{{purpose}}\",\n\t\t\"transferDetails\": \"1\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_sepa",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_sepa"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.4 Bank transfer Sepa without account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Bank transfer Sepa without account\", function() {",
+							"pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Bank transfer Sepa without account have errors code\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].code ).to.eql(2000);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.variables.set('beneficiaryName', 'Test Five');",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = pm.collectionVariables.get(\"value\");",
+							"pm.variables.set('value', value);",
+							"pm.variables.set('purpose', 'Top up card');",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-token",
+						"value": "{{confirmationToken}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-code",
+						"value": "{{x-confirmation-code}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-uuid",
+						"value": "{{x-app-uuid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_sepa\": {\n\t\t\"account\": \" \",\n\t\t\"beneficiaryName\": \"{{beneficiaryName}}\",\n\t\t\"iban\": \"{{sepa-account}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"purpose\": \"{{purpose}}\",\n\t\t\"transferDetails\": \"1\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_sepa",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_sepa"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.5 Bank transfer Sepa without applicationId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Bank transfer Sepa without applicationId have status 401\", function() {",
+							"pm.response.to.have.status(401);",
+							"});",
+							"pm.test(\"Bank transfer Sepa without applicationId have correct errors message\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].message ).to.eql(\"applicationId is not present in headers\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"pm.variables.set('account', accounts.split(',')[0]);",
+							"pm.variables.set('beneficiaryName', 'Test Five');",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value = pm.collectionVariables.get(\"value\");",
+							"pm.variables.set('value', value);",
+							"pm.variables.set('purpose', 'Top up card');",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-token",
+						"value": "{{confirmationToken}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-code",
+						"value": "{{x-confirmation-code}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-uuid",
+						"value": "{{x-app-uuid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_sepa\": {\n\t\t\"account\": \"{{account}}\",\n\t\t\"beneficiaryName\": \"{{beneficiaryName}}\",\n\t\t\"iban\": \"{{sepa-account}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"purpose\": \"{{purpose}}\",\n\t\t\"transferDetails\": \"1\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_sepa",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_sepa"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.6 Bank transfer Sepa",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Bank transfer Sepa\", function() {",
+							"pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Bank transfer Sepa have referenceNumber\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response ).to.have.property(\"referenceNumber\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"pm.variables.set('account', accounts.split(',')[0]);",
+							"pm.variables.set('beneficiaryName', 'Test Five');",
+							"pm.variables.set('currency', 'EUR');",
+							"",
+							"const value =pm.collectionVariables.get(\"value\");",
+							"pm.variables.set('value', value);",
+							"pm.variables.set('purpose', 'Top up card');",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-token",
+						"value": "{{confirmationToken}}",
+						"type": "text"
+					},
+					{
+						"key": "x-confirmation-code",
+						"value": "{{x-confirmation-code}}",
+						"type": "text"
+					},
+					{
+						"key": "x-app-uuid",
+						"value": "{{x-app-uuid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payment_sepa\": {\n\t\t\"account\": \"{{account}}\",\n\t\t\"beneficiaryName\": \"{{beneficiaryName}}\",\n\t\t\"iban\": \"{{sepa-account}}\",\n\t\t\"amount\": {\n\t\t\t\"sum\": {\n\t\t\t\t\"currency\": {\n\t\t\t\t\t\"code\": \"{{currency}}\"\n\t\t\t\t},\n\t\t\t\t\"value\": \"{{value}}\"\n\t\t\t}\n\t\t},\n\t\t\"purpose\": \"{{purpose}}\",\n\t\t\"transferDetails\": \"1\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/payment_sepa",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment_sepa"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6. Payment history",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Payment history\", function() {",
+							"pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.variables.set('from', '');",
+							"pm.variables.set('to', '');",
+							"pm.variables.set('page', 0);",
+							"pm.variables.set('size', 100);",
+							"pm.collectionVariables.set('accounts', 'PPY6298,PPY10950,PPY11290');",
+							"pm.variables.set('direction', 'any');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/api/v2/operations?from={{from}}&to={{to}}&page={{page}}&size={{size}}&accounts={{accounts}}&direction={{direction}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"operations"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "{{from}}"
+						},
+						{
+							"key": "to",
+							"value": "{{to}}"
+						},
+						{
+							"key": "page",
+							"value": "{{page}}"
+						},
+						{
+							"key": "size",
+							"value": "{{size}}"
+						},
+						{
+							"key": "accounts",
+							"value": "{{accounts}}"
+						},
+						{
+							"key": "direction",
+							"value": "{{direction}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7.1 Templates GET",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Templates GET\", function() {",
+							"    let response = pm.response.json();",
+							"pm.collectionVariables.set( \"templates-length\", response.length+1);",
+							"pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/api/v2/templates",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"templates"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7.2 Templates POST without token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Templates POST without token have status 401\", function() {",
+							"pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const templateLength = pm.collectionVariables.get('templates-length');",
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"const body = {",
+							"    \"title\": `Template_${templateLength}`,",
+							"\t\"type\": \"PAYMENT_PHONE\",",
+							"\t\"fromAccountId\": accounts.split(',')[0],",
+							"\t\"fromCardPan\": null,",
+							"\t\"fromCardId\": null,",
+							"\t\"beneficiaryName\": \"Test\",",
+							"\t\"toIban\": null,",
+							"\t\"toPhoneNumber\": \"+7 (900) 000-00-08\",",
+							"\t\"toCardNumber\": null,",
+							"\t\"beneficiaryAccount\": null,",
+							"\t\"country\": null,",
+							"\t\"city\": null,",
+							"\t\"address\": null,",
+							"\t\"swiftCode\": null,",
+							"\t\"beneficiaryBank\": null,",
+							"\t\"intermediaryBank\": null,",
+							"\t\"intermediarySwift\": null,",
+							"\t\"intermediaryAccount\": null,",
+							"\t\"commissionType\": null,",
+							"\t\"urgency\": null,",
+							"\t\"currencyCode\": \"EUR\",",
+							"\t\"amount\": \"1\",",
+							"\t\"purpose\": \"Other\",",
+							"\t\"transferDetails\": \"\"",
+							"}",
+							"pm.variables.set('body', JSON.stringify(body));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{body}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v2/templates",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"templates"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7.3 Templates POST without title",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Templates POST without title have status 401 \", function() {",
+							"pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Templates POST without title have errors code\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].code ).to.eql(2000);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"const body = {",
+							"\t\"type\": \"PAYMENT_PHONE\",",
+							"\t\"fromAccountId\": accounts.split(',')[0],",
+							"\t\"fromCardPan\": null,",
+							"\t\"fromCardId\": null,",
+							"\t\"beneficiaryName\": \"Test\",",
+							"\t\"toIban\": null,",
+							"\t\"toPhoneNumber\": \"+7 (900) 000-00-08\",",
+							"\t\"toCardNumber\": null,",
+							"\t\"beneficiaryAccount\": null,",
+							"\t\"country\": null,",
+							"\t\"city\": null,",
+							"\t\"address\": null,",
+							"\t\"swiftCode\": null,",
+							"\t\"beneficiaryBank\": null,",
+							"\t\"intermediaryBank\": null,",
+							"\t\"intermediarySwift\": null,",
+							"\t\"intermediaryAccount\": null,",
+							"\t\"commissionType\": null,",
+							"\t\"urgency\": null,",
+							"\t\"currencyCode\": \"EUR\",",
+							"\t\"amount\": \"1\",",
+							"\t\"purpose\": \"Other\",",
+							"\t\"transferDetails\": \"\"",
+							"}",
+							"pm.variables.set('body', JSON.stringify(body));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{body}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v2/templates",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"templates"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7.4 Templates POST without applicationId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Templates POST without applicationId have status 401\", function() {",
+							"pm.response.to.have.status(401);",
+							"});",
+							"pm.test(\"Templates POST without applicationId have correct errors message\", function() {",
+							"let response = pm.response.json();",
+							"pm.expect(response.errors[0].message ).to.eql(\"applicationId is not present in headers\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const templateLength = pm.collectionVariables.get('templates-length');",
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"const body = {",
+							"    \"title\": `Template_${templateLength}`,",
+							"\t\"type\": \"PAYMENT_PHONE\",",
+							"\t\"fromAccountId\": accounts.split(',')[0],",
+							"\t\"fromCardPan\": null,",
+							"\t\"fromCardId\": null,",
+							"\t\"beneficiaryName\": \"Test\",",
+							"\t\"toIban\": null,",
+							"\t\"toPhoneNumber\": \"+7 (900) 000-00-08\",",
+							"\t\"toCardNumber\": null,",
+							"\t\"beneficiaryAccount\": null,",
+							"\t\"country\": null,",
+							"\t\"city\": null,",
+							"\t\"address\": null,",
+							"\t\"swiftCode\": null,",
+							"\t\"beneficiaryBank\": null,",
+							"\t\"intermediaryBank\": null,",
+							"\t\"intermediarySwift\": null,",
+							"\t\"intermediaryAccount\": null,",
+							"\t\"commissionType\": null,",
+							"\t\"urgency\": null,",
+							"\t\"currencyCode\": \"EUR\",",
+							"\t\"amount\": \"1\",",
+							"\t\"purpose\": \"Other\",",
+							"\t\"transferDetails\": \"\"",
+							"}",
+							"pm.variables.set('body', JSON.stringify(body));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{body}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v2/templates",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"templates"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7.5 Templates POST",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Templates POST\", function() {",
+							"pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const templateLength = pm.collectionVariables.get('templates-length');",
+							"const accounts = pm.collectionVariables.get(\"accounts\");",
+							"",
+							"const body = {",
+							"    \"title\": `Template_${templateLength}`,",
+							"\t\"type\": \"PAYMENT_PHONE\",",
+							"\t\"fromAccountId\": accounts.split(',')[0],",
+							"\t\"fromCardPan\": null,",
+							"\t\"fromCardId\": null,",
+							"\t\"beneficiaryName\": \"Test\",",
+							"\t\"toIban\": null,",
+							"\t\"toPhoneNumber\": \"+7 (900) 000-00-08\",",
+							"\t\"toCardNumber\": null,",
+							"\t\"beneficiaryAccount\": null,",
+							"\t\"country\": null,",
+							"\t\"city\": null,",
+							"\t\"address\": null,",
+							"\t\"swiftCode\": null,",
+							"\t\"beneficiaryBank\": null,",
+							"\t\"intermediaryBank\": null,",
+							"\t\"intermediarySwift\": null,",
+							"\t\"intermediaryAccount\": null,",
+							"\t\"commissionType\": null,",
+							"\t\"urgency\": null,",
+							"\t\"currencyCode\": \"EUR\",",
+							"\t\"amount\": \"1\",",
+							"\t\"purpose\": \"Other\",",
+							"\t\"transferDetails\": \"\"",
+							"}",
+							"pm.variables.set('body', JSON.stringify(body));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "applicationId",
+						"value": "{{applicationId}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "productId",
+						"value": "{{productId}}",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{body}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v2/templates",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"templates"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "sessid",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "templates-length",
+			"value": ""
+		},
+		{
+			"key": "accounts",
+			"value": ""
+		},
+		{
+			"key": "value",
+			"value": ""
+		},
+		{
+			"key": "confirmationToken",
+			"value": ""
+		}
+	]
+}
